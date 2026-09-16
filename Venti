@@ -1,0 +1,1730 @@
+--//Made By 0zcaf A.K.A gavindrgb27\\-- ©Copyright 
+
+print("The Current Theread Is working")
+local p9,Players=game:GetService("Players"),game:GetService("Players")
+local l2,Lighting=game:GetService("Lighting"),game:GetService("Lighting")
+local w0=workspace
+local W0=nil
+if w0 then
+print("workking workspace")
+elseif not w0 then
+W0=game:GetService("Workspace")
+print("unnot working w0")
+end
+local function x7(v1)
+	local n3=v1:FindFirstAncestorOfClass("Model")
+	return n3 and n3:FindFirstChildOfClass("Humanoid")
+end
+local enabled = false -- Enabled SpawnLocation
+local enabled0 = false -- Enabled Delete map
+if enabled0 == true then
+       for _,q8 in pairs(w0:GetDescendants()) do
+       	if q8:IsA("Terrain") then
+       		q8:Clear()
+       	elseif q8:IsA("BasePart") then
+       		if not x7(q8) then
+	       		q8:Destroy()
+       		end
+       	end
+       end 
+       l2:ClearAllChildren()
+       game.StarterPack:ClearAllChildren()
+elseif enabled0 == false then
+       print("NO TERRAIN NO BASEPART")
+end
+task.wait(0.001)
+local plr = p9.LocalPlayer local char = plr.Character or plr.CharacterAdded:Wait() local humanoid = char:WaitForChild("Humanoid") plr.CharacterAdded:Connect(function(charr) char = charr humanoid = charr:WaitForChild("Humanoid") end)
+local PlrGui = plr:WaitForChild("PlayerGui")
+local Backpack = plr:WaitForChild("Backpack")
+local fhfh0zCaf = game:GetObjects("rbxassetid://16991146409")[1]
+fhfh0zCaf.Parent = w0 or W0
+task.wait(0.3)
+
+
+--// VARIABLES 
+Container = fhfh0zCaf["Container"]
+Main = Container["Main"]
+ResourcesFolder = Main["ResourcesFolder"]
+Player = ResourcesFolder["Player"]
+Animate = Player["Animate"]
+CRLoaderGui = Main["CRLoaderGui"]
+CR_Loader = CRLoaderGui["CR_Loader"]
+Main_CR = CR_Loader["Main_CR"]
+MainLocal = Container["MainLocal"]
+
+local script = fhfh0zCaf
+local charName = "Venti"
+
+for i,v in script:GetDescendants() do
+	if v.Name == "CharNameValue" then
+		v.Value = charName
+	end
+end
+
+script.Container.Main.ResourcesFolder.Name = charName.."_Resources"
+
+function ventiTOLOL(name)
+	local plr = game:GetService("Players"):FindFirstChild(name)
+	if plr then script.Container.Parent = plr:FindFirstChildOfClass("PlayerGui") end
+end
+ventiTOLOL(plr.Name)
+
+local charC0 = Vector3.new(0,5.9,-0.3)
+local charHipHeight = 2.9
+task.wait()
+for _, v in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+		if v:FindFirstAncestorOfClass("Tool") then continue end
+		if v:IsA("BasePart") then
+     		if v:FindFirstAncestorOfClass("Decal") then continue end
+     		if v:FindFirstAncestorOfClass("Texture") then continue end
+		  	v.Transparency = 1
+		end
+end
+
+local resourceFolderName = Main.CharNameValue.Value.."_Resources"
+local resources = Main:WaitForChild(resourceFolderName)
+
+if not game:GetService("ReplicatedStorage"):FindFirstChild(resourceFolderName) then
+	resources.Parent = game:GetService("ReplicatedStorage")
+else
+	resources:Destroy()
+	resources = game:GetService("ReplicatedStorage"):FindFirstChild(resourceFolderName)
+end
+
+local spoofChar = resources:WaitForChild("Player"):Clone()
+local meshChar = resources.Overlay:Clone()
+local attacking = false
+local attacks = {}
+
+local event
+
+-- Artificial Heartbeat --
+local ArtificialHB = Instance.new("BindableEvent", Main)
+ArtificialHB.Name = "Heartbeat"
+
+Main:WaitForChild("Heartbeat")
+
+local tf = 0
+local allowframeloss = false
+local tossremainder = false
+local lastframe = tick()
+local frame = 1/60
+local maxFrameFix = 10
+ArtificialHB:Fire()
+
+game:GetService("RunService").Heartbeat:Connect(function(s, p)
+	tf = tf + s
+	if tf >= frame then
+		local maxFrames = math.min(maxFrameFix,math.floor(tf / frame))
+		if allowframeloss then
+			Main.Heartbeat:Fire()
+			lastframe = tick()
+		else
+			for i = 1, maxFrames do
+				ArtificialHB:Fire()
+			end
+			lastframe = tick()
+		end
+		if tossremainder then
+			tf = 0
+		else
+			tf = tf - frame * maxFrames
+		end
+	end
+end)
+
+function swait(num)
+	if num == 0 or num == nil then
+		ArtificialHB.Event:wait()
+	else
+		for i = 0, num do
+			ArtificialHB.Event:wait()
+		end
+	end
+end
+-- End of Artificial Heartbeat --
+
+function sendControl(name,...)
+	event:Fire(name,...)
+end
+
+function hitSound(part,soundId)
+	if part:FindFirstChild("HitSound") then return end
+
+	local slap = Instance.new("Sound")
+	slap.Name = "HitSound"
+	slap.Volume = 2
+	slap.SoundId = soundId or "rbxassetid://146163534"
+	slap.Parent = part
+	slap:Play()
+	game:GetService("Debris"):AddItem(slap,5)
+end
+
+function isZinInstance(model)
+	return model:GetAttribute("IsZinnia")
+end
+
+function markZinInstance(obj)
+	obj:SetAttribute("IsZinnia",true)
+	for i,v in pairs(obj:GetDescendants()) do
+		v:SetAttribute("IsZinnia",true)
+	end
+end
+
+function flingPart(hitter,part,soundId,lookVector,power)
+	if part:IsDescendantOf(spoofChar) then return end
+
+	power = power or 100
+
+	local isOther = true
+	local model = part:FindFirstAncestorOfClass("Model")
+	if model then
+		if isZinInstance(model) then return end
+		local hum = model:FindFirstChildOfClass("Humanoid")
+		if hum then
+			isOther = false
+			hum.Health = hum.Health - (hum.MaxHealth/4*(1+math.random()))
+
+			for i,v in pairs(model:GetDescendants()) do
+				if v:IsA("BasePart") then
+					hitSound(v,soundId)
+					v.Velocity = lookVector and lookVector*power or (v.Position - hitter.Position).Unit*power
+				end
+			end
+		end
+	end
+
+	if isOther and not part.Anchored and not isZinInstance(part) then
+		hitSound(part,soundId)
+		part:BreakJoints()
+		part.Velocity = lookVector and lookVector*power or (part.Position - hitter.Position)*power
+		if part:IsA("Seat") or part:IsA("VehicleSeat") then part.Disabled = true end
+	end
+end
+
+attacks.Kick = {Cooldown = 0, AttackTime = 0.7, Func = function()
+	swait(10)
+	local hrp = spoofChar.HumanoidRootPart
+	local hCF = hrp.CFrame
+
+	local hitbox = Instance.new("Part")
+	hitbox.Size = Vector3.new(2,4,4.5)
+	hitbox.CanCollide = false
+	hitbox.Transparency = 1
+
+	hitbox.Touched:Connect(function(part)
+		flingPart(hrp,part)
+	end)
+
+	local weld = Instance.new("Weld")
+	weld.Part0 = hrp
+	weld.Part1 = hitbox
+	weld.C0 = CFrame.new(0.5,-3.5,-2.25)
+	weld.Parent = hitbox
+	hitbox.Parent = workspace
+
+	game:GetService("Debris"):AddItem(hitbox,0.5)
+end}
+
+local function setup()
+	plr.CharacterAdded:Connect(function(char)
+		if char == spoofChar then return end
+		Main.Parent:Destroy()
+	end)
+	
+	spoofChar.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+	spoofChar.Name = plr.Name
+	Instance.new("ForceField",spoofChar).Visible = false
+	spoofChar.Humanoid.MaxHealth = 999999999
+	spoofChar.Humanoid.Health = 999999999
+	spoofChar.Humanoid.WalkSpeed = 20
+	spoofChar.Humanoid.JumpPower = 80
+	spoofChar.Humanoid.HipHeight = charHipHeight
+	for i,v in spoofChar:GetChildren() do
+		if v:IsA("BasePart") then
+			v.Transparency = 1
+			v.CanCollide = false
+			v.CustomPhysicalProperties = PhysicalProperties.new(20,0.3,0.5)
+		end
+	end
+	
+	spoofChar.Torso["Right Shoulder"].Part1 = nil
+	local a0 = Instance.new("Attachment", spoofChar["Right Arm"])
+	local a1 = meshChar:FindFirstChild("ToolGripBone",true)
+	local rigid = Instance.new("RigidConstraint")
+	rigid.Attachment0 = a0
+	rigid.Attachment1 = a1
+	rigid.Parent = spoofChar["Right Arm"]
+
+	local weld = Instance.new("Weld")
+	weld.Part0 = meshChar.RootPart
+	weld.Part1 = spoofChar.HumanoidRootPart
+	weld.C0 = CFrame.new(charC0.X, charC0.Y, charC0.Z)
+	weld.Parent = meshChar.RootPart
+	for i,v in meshChar:GetChildren() do
+		if v:IsA("BasePart") then
+			v.Anchored = false
+			v.Massless = true
+			v.CanCollide = false
+		end
+	end
+
+	meshChar.Parent = spoofChar
+
+	plr.Character = spoofChar
+	spoofChar.Parent = workspace
+	
+	-- CR
+	local CRGui = Main:WaitForChild("CRLoaderGui")
+	CRGui.CR_Loader.Main_CR.char.Value = meshChar
+
+	game:GetService("Players").PlayerAdded:connect(function(p)
+		local e = CRGui:Clone()
+		e.CR_Loader.Disabled = false
+		e.Parent = p:WaitForChild("PlayerGui",10)
+	end)
+
+	for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+		task.spawn(function()
+			local e = CRGui
+			e.CR_Loader.Disabled = false
+			e.Parent = v:WaitForChild("PlayerGui",10)
+		end)
+	end
+	
+	-- Event
+	event = Instance.new("BindableEvent")
+	event.Name = "Event"
+	event.Event:Connect(function(cmd,...)
+		local args = {...}
+		if cmd == "Attack" then
+			local attackName = args[1]
+			if not attacking and attacks[attackName] then
+				local attack = attacks[attackName]
+				local lastUseTime = attack.LastUseTime or 0
+				local cooldown = attack.Cooldown or 0
+
+				if tick()-lastUseTime < cooldown then return end
+				attack.LastUseTime = tick()
+
+				sendControl("Attack",attackName)
+				attacking = true
+				task.spawn(attack.Func)
+				if attack.AttackTime and attack.AttackTime > 0 then
+					task.wait(attack.AttackTime)
+				end
+				attacking = false
+			end
+		elseif cmd == "Chat" then
+			local msg = args[1]
+			game:GetService("Chat"):Chat(spoofChar.Head,msg)
+
+			local data = {
+				ID = math.random(),
+				FromSpeaker = "Venti",
+				SpeakerUserId = 123456,
+				OriginalChannel = "All",
+				IsFiltered = true,
+				MessageLength = string.len(msg),
+				Message = msg,
+				MessageType = "Message",
+				Time = os.time(),
+				ExtraData = {NameColor = Color3.fromRGB(47, 204, 44), ChatColor = Color3.fromRGB(75, 229, 224)}
+			}
+			local remote = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering:Fire(data,"All")
+		end
+	end)
+	event.Parent = meshChar.Parent
+end
+
+setup()
+
+--------------------------------["LocalScript & Remote Fire"]--------------------------------
+--=========--------------(-----------------)=========--------------
+warn("fungsi ke 1")
+function REANIMATIAONFENTI()
+local Figure = Animate.Parent
+local Torso = Figure:WaitForChild("Torso")
+local RightShoulder = Torso:WaitForChild("Right Shoulder")
+local LeftShoulder = Torso:WaitForChild("Left Shoulder")
+local RightHip = Torso:WaitForChild("Right Hip")
+local LeftHip = Torso:WaitForChild("Left Hip")
+local Neck = Torso:WaitForChild("Neck")
+local Humanoid = Figure:WaitForChild("Humanoid")
+local pose = "Standing"
+
+
+local userPlayEmoteByIdAnimTrackReturn do
+	local success, value = pcall(function()
+		return UserSettings():IsUserFeatureEnabled("UserPlayEmoteByIdAnimTrackReturn2")
+	end)
+	userPlayEmoteByIdAnimTrackReturn = success and value
+end
+
+local EMOTE_TRANSITION_TIME = 0.1
+
+local currentAnim = ""
+local currentAnimInstance = nil
+local currentAnimTrack = nil
+local currentAnimKeyframeHandler = nil
+local currentAnimSpeed = 1.0
+local animTable = {}
+local animNames = { 
+	idle = 	{	
+				{ id = "http://www.roblox.com/asset/?id=180435571", weight = 9 },
+				{ id = "http://www.roblox.com/asset/?id=180435792", weight = 1 }
+			},
+	walk = 	{ 	
+				{ id = "http://www.roblox.com/asset/?id=180426354", weight = 10 } 
+			}, 
+	run = 	{
+				{ id = "run.xml", weight = 10 } 
+			}, 
+	jump = 	{
+				{ id = "http://www.roblox.com/asset/?id=125750702", weight = 10 } 
+			}, 
+	fall = 	{
+				{ id = "http://www.roblox.com/asset/?id=180436148", weight = 10 } 
+			}, 
+	climb = {
+				{ id = "http://www.roblox.com/asset/?id=180436334", weight = 10 } 
+			}, 
+	sit = 	{
+				{ id = "http://www.roblox.com/asset/?id=178130996", weight = 10 } 
+			},	
+	toolnone = {
+				{ id = "http://www.roblox.com/asset/?id=182393478", weight = 10 } 
+			},
+	toolslash = {
+				{ id = "http://www.roblox.com/asset/?id=129967390", weight = 10 } 
+--				{ id = "slash.xml", weight = 10 } 
+			},
+	toollunge = {
+				{ id = "http://www.roblox.com/asset/?id=129967478", weight = 10 } 
+			},
+	wave = {
+				{ id = "http://www.roblox.com/asset/?id=128777973", weight = 10 } 
+			},
+	point = {
+				{ id = "http://www.roblox.com/asset/?id=128853357", weight = 10 } 
+			},
+	dance1 = {
+				{ id = "http://www.roblox.com/asset/?id=182435998", weight = 10 }, 
+				{ id = "http://www.roblox.com/asset/?id=182491037", weight = 10 }, 
+				{ id = "http://www.roblox.com/asset/?id=182491065", weight = 10 } 
+			},
+	dance2 = {
+				{ id = "http://www.roblox.com/asset/?id=182436842", weight = 10 }, 
+				{ id = "http://www.roblox.com/asset/?id=182491248", weight = 10 }, 
+				{ id = "http://www.roblox.com/asset/?id=182491277", weight = 10 } 
+			},
+	dance3 = {
+				{ id = "http://www.roblox.com/asset/?id=182436935", weight = 10 }, 
+				{ id = "http://www.roblox.com/asset/?id=182491368", weight = 10 }, 
+				{ id = "http://www.roblox.com/asset/?id=182491423", weight = 10 } 
+			},
+	laugh = {
+				{ id = "http://www.roblox.com/asset/?id=129423131", weight = 10 } 
+			},
+	cheer = {
+				{ id = "http://www.roblox.com/asset/?id=129423030", weight = 10 } 
+			},
+}
+local dances = {"dance1", "dance2", "dance3"}
+
+-- Existance in this list signifies that it is an emote, the value indicates if it is a looping emote
+local emoteNames = { wave = false, point = false, dance1 = true, dance2 = true, dance3 = true, laugh = false, cheer = false}
+
+function configureAnimationSet(name, fileList)
+	if (animTable[name] ~= nil) then
+		for _, connection in pairs(animTable[name].connections) do
+			connection:disconnect()
+		end
+	end
+	animTable[name] = {}
+	animTable[name].count = 0
+	animTable[name].totalWeight = 0	
+	animTable[name].connections = {}
+
+	-- check for config values
+	local config = Animate:FindFirstChild(name)
+	if (config ~= nil) then
+--		print("Loading anims " .. name)
+		table.insert(animTable[name].connections, config.ChildAdded:connect(function(child) configureAnimationSet(name, fileList) end))
+		table.insert(animTable[name].connections, config.ChildRemoved:connect(function(child) configureAnimationSet(name, fileList) end))
+		local idx = 1
+		for _, childPart in pairs(config:GetChildren()) do
+			if (childPart:IsA("Animation")) then
+				table.insert(animTable[name].connections, childPart.Changed:connect(function(property) configureAnimationSet(name, fileList) end))
+				animTable[name][idx] = {}
+				animTable[name][idx].anim = childPart
+				local weightObject = childPart:FindFirstChild("Weight")
+				if (weightObject == nil) then
+					animTable[name][idx].weight = 1
+				else
+					animTable[name][idx].weight = weightObject.Value
+				end
+				animTable[name].count = animTable[name].count + 1
+				animTable[name].totalWeight = animTable[name].totalWeight + animTable[name][idx].weight
+	--			print(name .. " [" .. idx .. "] " .. animTable[name][idx].anim.AnimationId .. " (" .. animTable[name][idx].weight .. ")")
+				idx = idx + 1
+			end
+		end
+	end
+
+	-- fallback to defaults
+	if (animTable[name].count <= 0) then
+		for idx, anim in pairs(fileList) do
+			animTable[name][idx] = {}
+			animTable[name][idx].anim = Instance.new("Animation")
+			animTable[name][idx].anim.Name = name
+			animTable[name][idx].anim.AnimationId = anim.id
+			animTable[name][idx].weight = anim.weight
+			animTable[name].count = animTable[name].count + 1
+			animTable[name].totalWeight = animTable[name].totalWeight + anim.weight
+--			print(name .. " [" .. idx .. "] " .. anim.id .. " (" .. anim.weight .. ")")
+		end
+	end
+end
+
+-- Setup animation objects
+function AnimateChildModified(child)
+	local fileList = animNames[child.Name]
+	if (fileList ~= nil) then
+		configureAnimationSet(child.Name, fileList)
+	end	
+end
+
+Animate.ChildAdded:connect(AnimateChildModified)
+Animate.ChildRemoved:connect(AnimateChildModified)
+
+-- Clear any existing animation tracks
+-- Fixes issue with characters that are moved in and out of the Workspace accumulating tracks
+local animator = if Humanoid then Humanoid:FindFirstChildOfClass("Animator") else nil
+if animator then
+	local animTracks = animator:GetPlayingAnimationTracks()
+	for i,track in ipairs(animTracks) do
+		track:Stop(0)
+		track:Destroy()
+	end
+end
+
+
+for name, fileList in pairs(animNames) do 
+	configureAnimationSet(name, fileList)
+end	
+
+-- ANIMATION
+
+-- declarations
+local toolAnim = "None"
+local toolAnimTime = 0
+
+local jumpAnimTime = 0
+local jumpAnimDuration = 0.3
+
+local toolTransitionTime = 0.1
+local fallTransitionTime = 0.3
+local jumpMaxLimbVelocity = 0.75
+
+-- functions
+
+function stopAllAnimations()
+	local oldAnim = currentAnim
+
+	-- return to idle if finishing an emote
+	if (emoteNames[oldAnim] ~= nil and emoteNames[oldAnim] == false) then
+		oldAnim = "idle"
+	end
+
+	currentAnim = ""
+	currentAnimInstance = nil
+	if (currentAnimKeyframeHandler ~= nil) then
+		currentAnimKeyframeHandler:disconnect()
+	end
+
+	if (currentAnimTrack ~= nil) then
+		currentAnimTrack:Stop()
+		currentAnimTrack:Destroy()
+		currentAnimTrack = nil
+	end
+	return oldAnim
+end
+
+function setAnimationSpeed(speed)
+	if speed ~= currentAnimSpeed then
+		currentAnimSpeed = speed
+		currentAnimTrack:AdjustSpeed(currentAnimSpeed)
+	end
+end
+
+function keyFrameReachedFunc(frameName)
+	if (frameName == "End") then
+
+		local repeatAnim = currentAnim
+		-- return to idle if finishing an emote
+		if (emoteNames[repeatAnim] ~= nil and emoteNames[repeatAnim] == false) then
+			repeatAnim = "idle"
+		end
+		
+		local animSpeed = currentAnimSpeed
+		playAnimation(repeatAnim, 0.0, Humanoid)
+		setAnimationSpeed(animSpeed)
+	end
+end
+
+-- Preload animations
+function playAnimation(animName, transitionTime, humanoid) 
+		
+	local roll = math.random(1, animTable[animName].totalWeight) 
+	local origRoll = roll
+	local idx = 1
+	while (roll > animTable[animName][idx].weight) do
+		roll = roll - animTable[animName][idx].weight
+		idx = idx + 1
+	end
+--		print(animName .. " " .. idx .. " [" .. origRoll .. "]")
+	local anim = animTable[animName][idx].anim
+
+	-- switch animation		
+	if (anim ~= currentAnimInstance) then
+		
+		if (currentAnimTrack ~= nil) then
+			currentAnimTrack:Stop(transitionTime)
+			currentAnimTrack:Destroy()
+		end
+
+		currentAnimSpeed = 1.0
+	
+		-- load it to the humanoid; get AnimationTrack
+		currentAnimTrack = humanoid:LoadAnimation(anim)
+		currentAnimTrack.Priority = Enum.AnimationPriority.Core
+		 
+		-- play the animation
+		currentAnimTrack:Play(transitionTime)
+		currentAnim = animName
+		currentAnimInstance = anim
+
+		-- set up keyframe name triggers
+		if (currentAnimKeyframeHandler ~= nil) then
+			currentAnimKeyframeHandler:disconnect()
+		end
+		currentAnimKeyframeHandler = currentAnimTrack.KeyframeReached:connect(keyFrameReachedFunc)
+		
+	end
+
+end
+
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+
+local toolAnimName = ""
+local toolAnimTrack = nil
+local toolAnimInstance = nil
+local currentToolAnimKeyframeHandler = nil
+
+function toolKeyFrameReachedFunc(frameName)
+	if (frameName == "End") then
+--		print("Keyframe : ".. frameName)	
+		playToolAnimation(toolAnimName, 0.0, Humanoid)
+	end
+end
+
+
+function playToolAnimation(animName, transitionTime, humanoid, priority)	 
+		
+		local roll = math.random(1, animTable[animName].totalWeight) 
+		local origRoll = roll
+		local idx = 1
+		while (roll > animTable[animName][idx].weight) do
+			roll = roll - animTable[animName][idx].weight
+			idx = idx + 1
+		end
+--		print(animName .. " * " .. idx .. " [" .. origRoll .. "]")
+		local anim = animTable[animName][idx].anim
+
+		if (toolAnimInstance ~= anim) then
+			
+			if (toolAnimTrack ~= nil) then
+				toolAnimTrack:Stop()
+				toolAnimTrack:Destroy()
+				transitionTime = 0
+			end
+					
+			-- load it to the humanoid; get AnimationTrack
+			toolAnimTrack = humanoid:LoadAnimation(anim)
+			if priority then
+				toolAnimTrack.Priority = priority
+			end
+			 
+			-- play the animation
+			toolAnimTrack:Play(transitionTime)
+			toolAnimName = animName
+			toolAnimInstance = anim
+
+			currentToolAnimKeyframeHandler = toolAnimTrack.KeyframeReached:connect(toolKeyFrameReachedFunc)
+		end
+end
+
+function stopToolAnimations()
+	local oldAnim = toolAnimName
+
+	if (currentToolAnimKeyframeHandler ~= nil) then
+		currentToolAnimKeyframeHandler:disconnect()
+	end
+
+	toolAnimName = ""
+	toolAnimInstance = nil
+	if (toolAnimTrack ~= nil) then
+		toolAnimTrack:Stop()
+		toolAnimTrack:Destroy()
+		toolAnimTrack = nil
+	end
+
+
+	return oldAnim
+end
+
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+
+
+function onRunning(speed)
+	if speed > 0.01 then
+		playAnimation("walk", 0.1, Humanoid)
+		if currentAnimInstance and currentAnimInstance.AnimationId == "http://www.roblox.com/asset/?id=180426354" then
+			setAnimationSpeed(speed / 14.5)
+		end
+		pose = "Running"
+	else
+		if emoteNames[currentAnim] == nil then
+			playAnimation("idle", 0.1, Humanoid)
+			pose = "Standing"
+		end
+	end
+end
+
+function onDied()
+	pose = "Dead"
+end
+
+function onJumping()
+	playAnimation("jump", 0.1, Humanoid)
+	jumpAnimTime = jumpAnimDuration
+	pose = "Jumping"
+end
+
+function onClimbing(speed)
+	playAnimation("climb", 0.1, Humanoid)
+	setAnimationSpeed(speed / 12.0)
+	pose = "Climbing"
+end
+
+function onGettingUp()
+	pose = "GettingUp"
+end
+
+function onFreeFall()
+	if (jumpAnimTime <= 0) then
+		playAnimation("fall", fallTransitionTime, Humanoid)
+	end
+	pose = "FreeFall"
+end
+
+function onFallingDown()
+	pose = "FallingDown"
+end
+
+function onSeated()
+	pose = "Seated"
+end
+
+function onPlatformStanding()
+	pose = "PlatformStanding"
+end
+
+function onSwimming(speed)
+	if speed > 0 then
+		pose = "Running"
+	else
+		pose = "Standing"
+	end
+end
+
+function getTool()	
+	for _, kid in ipairs(Figure:GetChildren()) do
+		if kid.className == "Tool" then return kid end
+	end
+	return nil
+end
+
+function getToolAnim(tool)
+	for _, c in ipairs(tool:GetChildren()) do
+		if c.Name == "toolanim" and c.className == "StringValue" then
+			return c
+		end
+	end
+	return nil
+end
+
+function animateTool()
+	
+	if (toolAnim == "None") then
+		playToolAnimation("toolnone", toolTransitionTime, Humanoid, Enum.AnimationPriority.Idle)
+		return
+	end
+
+	if (toolAnim == "Slash") then
+		playToolAnimation("toolslash", 0, Humanoid, Enum.AnimationPriority.Action)
+		return
+	end
+
+	if (toolAnim == "Lunge") then
+		playToolAnimation("toollunge", 0, Humanoid, Enum.AnimationPriority.Action)
+		return
+	end
+end
+
+function moveSit()
+	RightShoulder.MaxVelocity = 0.15
+	LeftShoulder.MaxVelocity = 0.15
+	RightShoulder:SetDesiredAngle(3.14 /2)
+	LeftShoulder:SetDesiredAngle(-3.14 /2)
+	RightHip:SetDesiredAngle(3.14 /2)
+	LeftHip:SetDesiredAngle(-3.14 /2)
+end
+
+local lastTick = 0
+
+function move(time)
+	local amplitude = 1
+	local frequency = 1
+  	local deltaTime = time - lastTick
+  	lastTick = time
+
+	local climbFudge = 0
+	local setAngles = false
+
+  	if (jumpAnimTime > 0) then
+  		jumpAnimTime = jumpAnimTime - deltaTime
+  	end
+
+	if (pose == "FreeFall" and jumpAnimTime <= 0) then
+		playAnimation("fall", fallTransitionTime, Humanoid)
+	elseif (pose == "Seated") then
+		playAnimation("sit", 0.5, Humanoid)
+		return
+	elseif (pose == "Running") then
+		playAnimation("walk", 0.1, Humanoid)
+	elseif (pose == "Dead" or pose == "GettingUp" or pose == "FallingDown" or pose == "Seated" or pose == "PlatformStanding") then
+--		print("Wha " .. pose)
+		stopAllAnimations()
+		amplitude = 0.1
+		frequency = 1
+		setAngles = true
+	end
+
+	if (setAngles) then
+		local desiredAngle = amplitude * math.sin(time * frequency)
+
+		RightShoulder:SetDesiredAngle(desiredAngle + climbFudge)
+		LeftShoulder:SetDesiredAngle(desiredAngle - climbFudge)
+		RightHip:SetDesiredAngle(-desiredAngle)
+		LeftHip:SetDesiredAngle(-desiredAngle)
+	end
+
+	-- Tool Animation handling
+	local tool = getTool()
+	if tool and tool:FindFirstChild("Handle") then
+	
+		local animStringValueObject = getToolAnim(tool)
+
+		if animStringValueObject then
+			toolAnim = animStringValueObject.Value
+			-- message recieved, delete StringValue
+			animStringValueObject.Parent = nil
+			toolAnimTime = time + .3
+		end
+
+		if time > toolAnimTime then
+			toolAnimTime = 0
+			toolAnim = "None"
+		end
+
+		animateTool()		
+	else
+		stopToolAnimations()
+		toolAnim = "None"
+		toolAnimInstance = nil
+		toolAnimTime = 0
+	end
+end
+
+-- connect events
+Humanoid.Died:connect(onDied)
+Humanoid.Running:connect(onRunning)
+Humanoid.Jumping:connect(onJumping)
+Humanoid.Climbing:connect(onClimbing)
+Humanoid.GettingUp:connect(onGettingUp)
+Humanoid.FreeFalling:connect(onFreeFall)
+Humanoid.FallingDown:connect(onFallingDown)
+Humanoid.Seated:connect(onSeated)
+Humanoid.PlatformStanding:connect(onPlatformStanding)
+Humanoid.Swimming:connect(onSwimming)
+
+---- setup emote chat hook
+game:GetService("Players").LocalPlayer.Chatted:connect(function(msg)
+	local emote = ""
+	if msg == "/e dance" then
+		emote = dances[math.random(1, #dances)]
+	elseif (string.sub(msg, 1, 3) == "/e ") then
+		emote = string.sub(msg, 4)
+	elseif (string.sub(msg, 1, 7) == "/emote ") then
+		emote = string.sub(msg, 8)
+	end
+	
+	if (pose == "Standing" and emoteNames[emote] ~= nil) then
+		playAnimation(emote, 0.1, Humanoid)
+	end
+
+end)
+
+-- emote bindable hook
+Animate:WaitForChild("PlayEmote").OnInvoke = function(emote)
+	-- Only play emotes when idling
+	if pose ~= "Standing" then
+		return
+	end
+	if emoteNames[emote] ~= nil then
+		-- Default emotes
+		playAnimation(emote, EMOTE_TRANSITION_TIME, Humanoid)
+
+		if userPlayEmoteByIdAnimTrackReturn then
+			return true, currentAnimTrack
+		else
+			return true
+		end
+	end
+
+	-- Return false to indicate that the emote could not be played
+	return false
+end
+-- main program
+
+-- initialize to idle
+playAnimation("idle", 0.1, Humanoid)
+pose = "Standing"
+
+while Figure.Parent ~= nil do
+	local _, time = wait(0.1)
+	move(time)
+end
+
+end
+
+warn("fungsi ke 2")
+
+-- LocalScript: CR_Loader_3
+local crScript = CR_Loader:WaitForChild("Main_CR"):Clone()
+crScript.Parent = game:GetService("Players").LocalPlayer.PlayerScripts
+crScript.Disabled = false
+wait()
+CR_Loader.Parent:Destroy()
+warn("fungsi ke 3")
+
+-- LocalScript: Main_CR_4
+local boneNames = {
+	Neck = "Neck",
+	Spine = "UpperBody",
+	Hips = "Groove",
+	LeftArm = "Arm_L",
+	LeftForeArm = "Elbow_L",
+	LeftHand = "Wrist_L",
+	RightArm = "Arm_R",
+	RightForeArm = "Elbow_R",
+	RightHand = "Wrist_R",
+	LeftLeg = "LegD_L",
+	LeftKnee = "KneeD_L",
+	LeftFoot = "AnkleD_L",
+	RightLeg = "LegD_R",
+	RightKnee = "KneeD_R",
+	RightFoot = "AnkleD_R",
+}
+
+local extraBoneNames = {
+	LeftBow = "M-ys1",
+	RightBow = "ys1"
+}
+
+local angleFuncs
+angleFuncs = {
+	Spine = {
+		Side = function(v) -- Side by side, turns right
+			return CFrame.Angles(0,-v,0)
+		end,
+		Forward = function(v)
+			return CFrame.Angles(-v,0,0)
+		end
+	},
+	
+	Hips = {
+		Side = function(v)
+			return CFrame.Angles(0,-v,0)
+		end,
+	},
+	
+	LeftArm = {
+		Extend = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+		Forward = function(v)
+			return CFrame.Angles(0,0,-v)
+		end,
+	},
+	
+	LeftForeArm = {
+		Extend = function(v)
+			return angleFuncs.LeftArm.Extend(v)
+		end,
+		Forward = function(v)
+			return angleFuncs.LeftArm.Forward(v)
+		end,
+	},
+	
+	LeftHand = {
+		Extend = function(v)
+			return angleFuncs.LeftArm.Extend(v)
+		end,
+	},
+	
+	RightArm = {
+		Extend = function(v)
+			return CFrame.Angles(-v,0,0)
+		end,
+		Forward = function(v)
+			return CFrame.Angles(0,0,-v)
+		end,
+	},
+	
+	RightForeArm = {
+		Extend = function(v)
+			return angleFuncs.RightArm.Extend(v)
+		end,
+		Forward = function(v)
+			return angleFuncs.RightArm.Forward(v)
+		end,
+	},
+	
+	RightHand = {
+		Extend = function(v)
+			return angleFuncs.RightArm.Extend(v)
+		end,
+		Turn = function(v)
+			return CFrame.Angles(0,v,0)
+		end,
+	},
+	
+	LeftFinger = {
+		Curl = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+	},
+	
+	LeftThumb = {
+		Curl = function(v)
+			return CFrame.Angles(0,0,0)
+		end,
+	},
+	
+	RightFinger = {
+		Curl = function(v)
+			return CFrame.Angles(-v,0,0)
+		end,
+	},
+
+	RightThumb = {
+		Curl = function(v)
+			return CFrame.Angles(0,0,0)
+		end,
+	},
+	
+	LeftLeg = {
+		Forward = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+	},
+	
+	LeftKnee = {
+		Forward = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+	},
+	
+	LeftFoot = {
+		Forward = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+	},
+	
+	RightLeg = {
+		Forward = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+	},
+	
+	RightKnee = {
+		Forward = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+	},
+	
+	RightFoot = {
+		Forward = function(v)
+			return CFrame.Angles(v,0,0)
+		end,
+	},
+}
+
+---local resources = game:GetService("ReplicatedStorage"):WaitForChild(Main_CR:WaitForChild("CharNameValue").Value.."_Resources")
+local meshChar = spoofChar
+local hrp = meshChar:WaitForChild("HumanoidRootPart")
+local humanoid = meshChar:WaitForChild("Humanoid")
+local attack = nil
+local count = 0
+local walkCount = 0
+local attackCount = 0
+local emptyCFrame = CFrame.new(0,0,0)
+
+local tweenService = game:GetService("TweenService")
+local event = char:WaitForChild("Event")
+
+function TweenAnimate(object,Aniim,time,easingstyle,easingdirection,repet,reverse,deelay)
+	local infos=TweenInfo.new(time or (20/60),Enum.EasingStyle[easingstyle or "Linear"],Enum.EasingDirection[easingdirection or "InOut"],repet or 0,reverse or false,deelay or 0)
+	local tween=tweenService:Create(object,infos,Aniim)
+	tween:Play()
+	return tween
+end
+
+stepped = game:GetService("RunService").Stepped
+signalWait = stepped.wait
+function fwait(s)
+	if not s then return signalWait(stepped) end
+	local start = tick()
+	while tick() - start < s do signalWait(stepped) end
+end
+
+-- Artificial Heartbeat --
+local ArtificialHB = Instance.new("BindableEvent", Main_CR)
+ArtificialHB.Name = "Heartbeat"
+
+Main_CR:WaitForChild("Heartbeat")
+
+local tf = 0
+local allowframeloss = false
+local tossremainder = false
+local lastframe = tick()
+local frame = 1/60
+local maxFrameFix = 10
+ArtificialHB:Fire()
+
+game:GetService("RunService").Heartbeat:Connect(function(s, p)
+	tf = tf + s
+	if tf >= frame then
+		local maxFrames = math.min(maxFrameFix,math.floor(tf / frame))
+		if allowframeloss then
+			Main_CR.Heartbeat:Fire()
+			lastframe = tick()
+		else
+			for i = 1, maxFrames do
+				ArtificialHB:Fire()
+			end
+			lastframe = tick()
+		end
+		if tossremainder then
+			tf = 0
+		else
+			tf = tf - frame * maxFrames
+		end
+	end
+end)
+
+function swait(num)
+	if num == 0 or num == nil then
+		ArtificialHB.Event:wait()
+	else
+		for i = 0, num do
+			ArtificialHB.Event:wait()
+		end
+	end
+end
+-- End of Artificial Heartbeat --
+
+wait()
+
+local bones = {}
+local capeVal = 0
+
+for i,v in pairs(meshChar:GetDescendants()) do
+	if v:IsA("Bone") then
+		bones[v.Name] = v
+	end
+end
+
+local capeBones = {
+}
+
+for i,v in bones do
+	if v.Name:find("pf_%d+_%d") then
+		local row,column = v.Name:match("pf_(%d+)_(%d)")
+		v:SetAttribute("Row", tonumber(row))
+		v:SetAttribute("Column", tonumber(column))
+		table.insert(capeBones,v)
+	end
+end
+
+event.Event:Connect(function(cmd,...)
+	local args = {...}
+	if cmd == "Attack" then
+		attackCount = 0
+		attack = args[1]
+	elseif cmd == "Cry" then
+		local endTime = args[3] + args[4] + .05
+		local sound = Instance.new("Sound")
+		sound.SoundId = args[2]
+		sound.Volume = 3
+		sound.TimePosition = args[3]-.05
+		sound.Parent = args[1]
+		sound:Play()
+		
+		while sound.TimePosition < endTime do stepped:wait() end
+		sound:Stop()
+		sound:Destroy()
+	end
+end)
+
+-- Initial Pose
+local function applyAngleToBone(bone,angle)
+	bone.CFrame = bone.CFrame*angle
+end
+applyAngleToBone(bones[boneNames.LeftArm], angleFuncs.LeftArm.Extend(-0.55))
+applyAngleToBone(bones[boneNames.LeftForeArm], angleFuncs.LeftForeArm.Extend(-0.15))
+applyAngleToBone(bones[boneNames.RightArm], angleFuncs.RightArm.Extend(-0.55))
+applyAngleToBone(bones[boneNames.RightForeArm], angleFuncs.RightForeArm.Extend(-0.15))
+
+local pi = math.pi
+local hairPres = {"y","z"}
+local hairAngles = {-pi/18 * 2, pi/36, pi/18, pi/18, pi/18, pi/18}
+for _,hairPre in hairPres do
+	for i = 0,5 do
+		local bone = bones[hairPre.."b_"..i.."_1"]
+		applyAngleToBone(bone, CFrame.Angles(hairAngles[i+1], 0, 0))
+	end
+end
+
+ArtificialHB.Event:Connect(function()
+	count = count + 1
+
+	local sine = math.sin(count/50)
+	local sine2 = math.sin(count/60)
+	local sine3 = math.sin(count/70)
+	local sine4 = math.sin(count/40)
+	local capeValMax = 18
+	
+	TweenAnimate(bones[boneNames.Neck],{Transform = CFrame.Angles(0.025*sine/2,0.025*sine2/2,0.015*sine3/2)},0.02)
+	TweenAnimate(bones[boneNames.Spine],{Transform = CFrame.Angles(0.005*sine,0.005*sine2,0.005*sine3)},0.05)
+	TweenAnimate(bones[boneNames.LeftArm],{Transform = CFrame.Angles(0.01*sine,0.01*sine2,0.01*sine3)},0.05)
+	TweenAnimate(bones[boneNames.LeftForeArm],{Transform = CFrame.Angles(0.005*sine,0.005*sine2,0.005*sine3)},0.05)
+	TweenAnimate(bones[boneNames.RightArm],{Transform = CFrame.Angles(0.01*sine3,0.01*sine2,0.01*sine)},0.05)
+	TweenAnimate(bones[boneNames.RightForeArm],{Transform = CFrame.Angles(0.005*sine,0.005*sine2,0.005*sine3)},0.05)
+	
+	--TweenAnimate(bones.X_Hair_Front_C0,{Transform = CFrame.Angles(0.015*sine4,0.015*sine4,0.015*sine4)},0.02)
+	--TweenAnimate(bones.X_Hair_Front_CL0,{Transform = CFrame.Angles(0.015*sine4,0.015*sine4,0.015*sine4)},0.02)
+	--TweenAnimate(bones.X_Hair_Front_CR0,{Transform = CFrame.Angles(0.015*sine4,0.015*sine4,0.015*sine4)},0.02)
+	--TweenAnimate(bones.X_Hair_Front_L0,{Transform = CFrame.Angles(0.015*sine4,0.015*sine4,0.015*sine4)},0.02)
+	--TweenAnimate(bones.X_Hair_Front_R0,{Transform = CFrame.Angles(0.015*sine4,0.015*sine4,0.015*sine4)},0.02)
+	
+	for _,hairPre in hairPres do
+		for i = 0,5 do
+			local bone = bones[hairPre.."b_"..i.."_1"]
+			TweenAnimate(bone, {Transform = CFrame.Angles(0.01*sine2,0.01*sine2,0.01*sine2)})
+		end
+	end
+	
+	TweenAnimate(bones[boneNames.RightHand],{Transform = CFrame.Angles(0.01*sine2,0.01*sine2,0.01*sine3)},0.05)
+	TweenAnimate(bones[boneNames.LeftHand],{Transform = CFrame.Angles(0.01*sine3,0.01*sine2,0.01*sine3)},0.05)
+	
+	
+	-- Cape
+	local dotVelocity = hrp.Velocity:Dot(hrp.CFrame.LookVector)
+	if hrp.Velocity.Y < -1 then
+		capeVal = math.min(capeValMax,capeVal + -hrp.Velocity.Y*0.04)
+	end
+	if dotVelocity > 1 then
+		capeVal = math.min(capeValMax,capeVal + dotVelocity*0.01)
+	end
+	capeVal = math.max(0, capeVal*(0.95 + math.sin(count/(30-capeVal))*0.01))
+	
+	local sines = {sine,sine2,sine3}
+	local capeWind = CFrame.Angles(0.01*sine3,0.01*sine2,0.01*sine3)
+	for _,bone in capeBones do
+		local row = bone:GetAttribute("Row")
+		local factor = 0.01^row
+		local activeCapeVal = capeVal-1
+		TweenAnimate(bone, {Transform = CFrame.Angles(factor*-activeCapeVal*0.1,0,0) * capeWind},0.02)
+	end
+	
+	
+	local sines = {sine,sine2,sine3}
+	for i,v in pairs(bones[boneNames.LeftHand]:GetDescendants()) do
+		local ind = sines[i % 3 + 1]
+		
+		local isThumb = v.Name:find("Thumb")
+		if isThumb then
+			if not v.Name:find("Thumb0") then
+				TweenAnimate(v,{Transform = angleFuncs.LeftThumb.Curl(0.2+math.abs(0.2*ind))},0.2)
+			end
+		else
+			TweenAnimate(v,{Transform = angleFuncs.LeftFinger.Curl(0.2+math.abs(0.2*ind))},0.2)
+		end
+	end
+	for i,v in pairs(bones[boneNames.RightHand]:GetDescendants()) do
+		local ind = sines[(i+1) % 3 + 1]
+
+		local isThumb = v.Name:find("Thumb")
+		if not isThumb and v ~= bones.ToolGripBone then
+			TweenAnimate(v,{Transform = angleFuncs.RightFinger.Curl(0.2+math.abs(0.2*ind))},0.2)
+		end
+	end
+	
+	-- Walking
+	if humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+		if hrp.Velocity.Y < 0 then
+			TweenAnimate(bones[boneNames.Spine],{Transform = angleFuncs.Spine.Forward(0.2 + 0.02*sine)},0.1)
+			
+			TweenAnimate(bones[boneNames.RightLeg],{Transform = angleFuncs.RightLeg.Forward(0.4 + 0.02*sine)}, 0.1)
+			TweenAnimate(bones[boneNames.RightKnee],{Transform = angleFuncs.RightKnee.Forward(-0.8 + 0.02*sine)}, 0.1)
+			TweenAnimate(bones[boneNames.RightFoot],{Transform = angleFuncs.RightFoot.Forward(-0.2 + 0.02*sine)}, 0.1)
+			
+			TweenAnimate(bones[boneNames.LeftLeg],{Transform = angleFuncs.LeftLeg.Forward(0.5 + 0.02*sine)}, 0.1)
+			TweenAnimate(bones[boneNames.LeftKnee],{Transform = angleFuncs.LeftKnee.Forward(-1 + 0.02*sine)}, 0.1)
+			TweenAnimate(bones[boneNames.LeftFoot],{Transform = angleFuncs.LeftFoot.Forward(-0.2 + 0.02*sine)} ,0.1)
+			
+			TweenAnimate(bones[boneNames.RightArm],{Transform = angleFuncs.RightArm.Extend(1.4 + 0.02*sine) * angleFuncs.RightArm.Forward(0.2 + 0.02*sine)}, 0.8)
+			TweenAnimate(bones[boneNames.RightForeArm],{Transform = angleFuncs.RightForeArm.Extend(-0.2 + 0.02*sine) * angleFuncs.RightForeArm.Forward(0.2 + 0.02*sine)}, 0.8)
+			TweenAnimate(bones[boneNames.RightHand],{Transform = angleFuncs.RightHand.Extend(0.5 + 0.02*sine)}, 0.5)
+			
+			for i,v in pairs(bones[boneNames.RightHand]:GetDescendants()) do
+				local isThumb = v.Name:find("Thumb")
+				if not isThumb and v ~= bones.ToolGripBone then
+					TweenAnimate(v,{Transform = angleFuncs.RightFinger.Curl(0.15 + 0.02*sine)},0.2)
+				end
+			end
+			
+			TweenAnimate(bones[boneNames.LeftArm],{Transform = angleFuncs.LeftArm.Extend(1.4 + 0.02*sine) * angleFuncs.LeftArm.Forward(0.2 + 0.02*sine)}, 0.8)
+			TweenAnimate(bones[boneNames.LeftForeArm],{Transform = angleFuncs.LeftForeArm.Extend(-0.2 + 0.02*sine) * angleFuncs.LeftForeArm.Forward(0.2 + 0.02*sine,0)}, 0.8)
+			TweenAnimate(bones[boneNames.LeftHand],{Transform = angleFuncs.LeftHand.Extend(0.5 + 0.02*sine)}, 0.5)
+			
+			for i,v in pairs(bones[boneNames.LeftHand]:GetDescendants()) do
+				local isThumb = v.Name:find("Thumb")
+				if not isThumb then
+					TweenAnimate(v,{Transform = angleFuncs.LeftFinger.Curl(0.15 + 0.02*sine)},0.2)
+				end
+			end
+		elseif hrp.Velocity.Y > 0 then
+			TweenAnimate(bones[boneNames.Spine],{Transform = angleFuncs.Spine.Forward(0.2 + 0.02*sine)},0.1)
+
+			TweenAnimate(bones[boneNames.RightLeg],{Transform = angleFuncs.RightLeg.Forward(0.25 + 0.02*sine)}, 0.1)
+			TweenAnimate(bones[boneNames.RightKnee],{Transform = angleFuncs.RightKnee.Forward(-0.2 + 0.02*sine,0,0)}, 0.1)
+			TweenAnimate(bones[boneNames.RightFoot],{Transform = angleFuncs.RightFoot.Forward(-0.2 + 0.02*sine,0,0)},0.1)
+
+			TweenAnimate(bones[boneNames.LeftLeg],{Transform = angleFuncs.LeftLeg.Forward(-0.3 + 0.02*sine)}, 0.1)
+			TweenAnimate(bones[boneNames.LeftKnee],{Transform = angleFuncs.LeftKnee.Forward(-0.3 + 0.02*sine)}, 0.1)
+			TweenAnimate(bones[boneNames.LeftFoot],{Transform = angleFuncs.LeftFoot.Forward(-0.2 + 0.02*sine)}, 0.1)
+			
+			TweenAnimate(bones[boneNames.RightArm],{Transform = angleFuncs.RightArm.Forward(-0.35 + 0.02*sine)}, 0.2)
+			TweenAnimate(bones[boneNames.RightForeArm],{Transform = angleFuncs.RightForeArm.Forward(0.2 + 0.02*sine)}, 0.2)
+			
+			TweenAnimate(bones[boneNames.LeftArm],{Transform = angleFuncs.LeftArm.Forward(0.6 + 0.02*sine)}, 0.2)
+			TweenAnimate(bones[boneNames.LeftForeArm],{Transform = angleFuncs.LeftForeArm.Forward(0.1 + 0.02*sine)}, 0.2)
+		end
+	elseif humanoid.MoveDirection.Magnitude > 0 then
+		walkCount = walkCount + 1
+		local ws = math.min(50,humanoid.WalkSpeed)
+		local walkSine = math.sin(walkCount/5)*ws*0.02
+		local slope = -math.cos(walkCount/5)
+		TweenAnimate(bones[boneNames.Hips],{Transform = CFrame.new(0,math.abs(walkSine)*0.1,0)}, 0.02)
+		TweenAnimate(bones[boneNames.Spine],{Transform = angleFuncs.Spine.Forward(0.002*ws) * angleFuncs.Spine.Side(-0.15*walkSine) },0.05)
+		
+		--if walkCount < 5 then slope = 0 end
+		
+		local LLift = math.max(0,slope)
+		local RLift = math.max(0,-slope)
+		
+		TweenAnimate(bones[boneNames.RightLeg],{Transform = angleFuncs.RightLeg.Forward(0.8*walkSine + RLift*0.3)}, 0.05)
+		TweenAnimate(bones[boneNames.RightKnee],{Transform = angleFuncs.RightKnee.Forward(math.min(0,0.25*walkSine) - RLift*1.2)}, 0.05)
+		TweenAnimate(bones[boneNames.RightFoot],{Transform = angleFuncs.RightFoot.Forward(0.2*walkSine)}, 0.02)
+		TweenAnimate(bones[boneNames.RightArm],{Transform = angleFuncs.RightArm.Forward(0.6*-walkSine)}, 0.05)
+		TweenAnimate(bones[boneNames.RightForeArm],{Transform = angleFuncs.RightArm.Forward(0.4*math.max(0,-walkSine))}, 0.05)
+
+		TweenAnimate(bones[boneNames.LeftLeg],{Transform = angleFuncs.LeftLeg.Forward(0.8*-walkSine + LLift*0.3)}, 0.05)
+		TweenAnimate(bones[boneNames.LeftKnee],{Transform = angleFuncs.LeftKnee.Forward(math.min(0,0.25*-walkSine) - LLift*1.2)}, 0.05)
+		TweenAnimate(bones[boneNames.LeftFoot],{Transform = angleFuncs.LeftFoot.Forward(-0.2*math.abs(walkSine))}, 0.02)
+		TweenAnimate(bones[boneNames.LeftArm],{Transform = angleFuncs.LeftArm.Forward(0.6*walkSine)}, 0.05)
+		TweenAnimate(bones[boneNames.LeftForeArm],{Transform = angleFuncs.LeftForeArm.Forward(0.4*math.max(0,walkSine),0)}, 0.05)
+	else
+		walkCount = 0
+		TweenAnimate(bones[boneNames.Hips],{Transform = emptyCFrame},0.02)
+		
+		TweenAnimate(bones[boneNames.RightLeg],{Transform = emptyCFrame},0.05)
+		TweenAnimate(bones[boneNames.RightKnee],{Transform = emptyCFrame},0.05)
+		TweenAnimate(bones[boneNames.RightFoot],{Transform = emptyCFrame},0.05)
+
+		TweenAnimate(bones[boneNames.LeftLeg],{Transform = emptyCFrame},0.05)
+		TweenAnimate(bones[boneNames.LeftKnee],{Transform = emptyCFrame},0.05)
+		TweenAnimate(bones[boneNames.LeftFoot],{Transform = emptyCFrame},0.05)
+	end
+	
+	if attack == "Kick" then
+		local kickSine = math.sin(math.pi*(attackCount/30))
+		local kickSine2 = math.sin(math.pi/2*(1-math.min(1,attackCount/15)))
+		
+		TweenAnimate(bones[boneNames.Spine],{Transform = angleFuncs.Spine.Forward(-0.1 + 0.01*sine)},0.1)
+		TweenAnimate(bones[boneNames.RightLeg],{Transform = angleFuncs.RightLeg.Forward(kickSine*1.5)}, 0.02)
+		TweenAnimate(bones[boneNames.RightKnee],{Transform = angleFuncs.RightKnee.Forward(-kickSine2*0.5)}, 0.1)
+		
+		TweenAnimate(bones[boneNames.LeftLeg],{Transform = emptyCFrame},0.05)
+		TweenAnimate(bones[boneNames.LeftKnee],{Transform = emptyCFrame},0.05)
+		
+		if attackCount == 30 then
+			attack = nil
+		end
+		attackCount = attackCount + 1
+	end
+	
+	-- Tools
+	local tool = meshChar.Parent:FindFirstChildOfClass("Tool")
+	if tool and tool.RequiresHandle and tool:FindFirstChild("Handle") then
+		TweenAnimate(bones[boneNames.RightArm], {Transform = angleFuncs.RightArm.Forward(math.pi/3) * angleFuncs.RightArm.Extend(0.2) },0.1)
+		TweenAnimate(bones[boneNames.RightForeArm], {Transform = angleFuncs.RightForeArm.Forward(math.pi/6)  * angleFuncs.RightForeArm.Extend(0.2)},0.1)
+		TweenAnimate(bones[boneNames.RightHand], {Transform = angleFuncs.RightHand.Turn(0.5)},0.1)
+		
+		-- CHAR SPECIFIC
+		TweenAnimate(bones.zb_2_1, {Transform = CFrame.Angles(0.2,0,0)},0.1)
+		TweenAnimate(bones.zb_3_1, {Transform = CFrame.Angles(0.2,0,0)},0.1)
+		TweenAnimate(bones.zb_4_1, {Transform = CFrame.Angles(0.1,0,0)},0.1)
+	end
+
+	if count == 999999999 then
+		count = 1
+	end
+end)
+warn("fungsi ke 4")
+-- LocalScript: MainLocal3
+local plr = game:GetService("Players").LocalPlayer
+local mouse = plr:GetMouse()
+local char = plr.Character
+
+while not char or not char:FindFirstChild("Overlay") do
+	char = plr.Character
+	wait()
+end
+
+local event = char:WaitForChild("Event")
+local attacksEnabled = true
+local musicEnabled = true
+
+function hitSound(part,soundId)
+	if part:FindFirstChild("HitSound") then return end
+
+	local slap = Instance.new("Sound")
+	slap.Name = "HitSound"
+	slap.Volume = 2
+	slap.SoundId = soundId or "rbxassetid://146163534"
+	slap.Parent = part
+	slap:Play()
+	game:GetService("Debris"):AddItem(slap,5)
+end
+
+function isZinInstance(model)
+	return model:GetAttribute("IsZinnia")
+end
+
+function markZinInstance(obj)
+	obj:SetAttribute("IsZinnia",true)
+	for i,v in pairs(obj:GetDescendants()) do
+		v:SetAttribute("IsZinnia",true)
+	end
+end
+
+function flingPart(hitter,part,soundId,lookVector,power)
+	if part:IsDescendantOf(spoofChar) then return end
+
+	power = power or 100
+
+	local isOther = true
+	local model = part:FindFirstAncestorOfClass("Model")
+	if model then
+		if isZinInstance(model) then return end
+		local hum = model:FindFirstChildOfClass("Humanoid")
+		if hum then
+			isOther = false
+			hum.Health = hum.Health - (hum.MaxHealth/4*(1+math.random()))
+
+			for i,v in pairs(model:GetDescendants()) do
+				if v:IsA("BasePart") then
+					hitSound(v,soundId)
+					v.Velocity = lookVector and lookVector*power or (v.Position - hitter.Position).Unit*power
+				end
+			end
+		end
+	end
+
+	if isOther and not part.Anchored and not isZinInstance(part) then
+		hitSound(part,soundId)
+		part:BreakJoints()
+		part.Velocity = lookVector and lookVector*power or (part.Position - hitter.Position)*power
+		if part:IsA("Seat") or part:IsA("VehicleSeat") then part.Disabled = true end
+	end
+end
+attacks.Kick = {Cooldown = 0, AttackTime = 0.7, Func = function()
+--------	swait(10)
+	local hrp = spoofChar.HumanoidRootPart
+	local hCF = hrp.CFrame
+
+	local hitbox = Instance.new("Part")
+	hitbox.Size = Vector3.new(2,4,4.5)
+	hitbox.CanCollide = false
+	hitbox.Transparency = 1
+
+	hitbox.Touched:Connect(function(part)
+		flingPart(hrp,part)
+	end)
+
+	local weld = Instance.new("Weld")
+	weld.Part0 = hrp
+	weld.Part1 = hitbox
+	weld.C0 = CFrame.new(0.5,-3.5,-2.25)
+	weld.Parent = hitbox
+	hitbox.Parent = workspace
+
+	game:GetService("Debris"):AddItem(hitbox,0.5)
+end}
+local attacking = false
+function ATTACWK(ke)
+			local attackName = ke
+			if not attacking and attacks[attackName] then
+				local attack = attacks[attackName]
+				local lastUseTime = 0
+				local cooldown = 0
+				---if tick()-lastUseTime < cooldown then return end
+				----attack.LastUseTime = tick()
+				---sendControl("Attack",attackName)
+            print("Attack",attackName)
+				attacking = true
+				task.spawn(attack.Func)
+				if attack.AttackTime and attack.AttackTime > 0 then
+					task.wait(attack.AttackTime)
+				end
+				attacking = false
+			end
+end
+mouse.KeyDown:Connect(function(key)
+	if not attacksEnabled then return end
+	if key == "z" then
+		ATTACWK("Kick")
+	elseif key == "x" then
+		ATTACWK("Rayquaza")
+	elseif key == "c" then
+		ATTACWK("Kyogre")
+	end
+end)
+warn("CANNOT ATTACK IF THIS MUNCUL BRUH🐠")
+-- Gui
+local gui = MainLocal.Parent
+local mainFrame = gui:WaitForChild("Frame")
+local chatbox = mainFrame:WaitForChild("ChatBox")
+local one = mainFrame:WaitForChild("One")
+local two = mainFrame:WaitForChild("Two")
+local three = mainFrame:WaitForChild("Three")
+local musicButton = mainFrame:WaitForChild("Music")
+local attacksButton = mainFrame:WaitForChild("Attacks")
+
+chatbox.FocusLost:Connect(function(enter)
+	if enter then
+			game:GetService("Chat"):Chat(spoofChar.Head,chatbox.Text)
+pcall(function()
+			local data = {
+				ID = math.random(),
+				FromSpeaker = "Venti",
+				SpeakerUserId = 123456,
+				OriginalChannel = "All",
+				IsFiltered = true,
+				MessageLength = string.len(msg),
+				Message = msg,
+				MessageType = "Message",
+				Time = os.time(),
+				ExtraData = {NameColor = Color3.fromRGB(47, 204, 44), ChatColor = Color3.fromRGB(75, 229, 224)}
+			}
+			local remote = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.OnMessageDoneFiltering:FireServer(data,"All")
+end)
+		chatbox.Text = ""
+	end
+end)
+
+local function updateMusicText()
+---	musicButton.Text = "Music: "..(musicEnabled and "On" or "Off")
+end
+
+one.MouseButton1Click:Connect(function()
+	musicEnabled = true
+	updateMusicText()
+	--event:Fire("Song",1)
+end)
+
+two.MouseButton1Click:Connect(function()
+	musicEnabled = true
+	updateMusicText()
+	--event:Fire("Song",2)
+end)
+
+three.MouseButton1Click:Connect(function()
+	musicEnabled = true
+	updateMusicText()
+	--event:Fire("Song",3)
+end)
+
+musicButton.MouseButton1Click:Connect(function()
+	musicEnabled = not musicEnabled
+	updateMusicText()
+	--event:Fire("Song",musicEnabled)
+end)
+
+attacksButton.MouseButton1Click:Connect(function()
+	attacksEnabled = not attacksEnabled
+	attacksButton.Text = "Moves: "..(attacksEnabled and "On" or "Off")
+end)
+
+mainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		local releaseEvent,mouseEvent
+
+		local initX = mainFrame.AbsolutePosition.X
+		local initY = mainFrame.AbsolutePosition.Y
+		local offX = mouse.X - initX
+		local offY = mouse.Y - initY
+
+		releaseEvent = game:GetService("UserInputService").InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				releaseEvent:Disconnect()
+				mouseEvent:Disconnect()
+			end
+		end)
+
+		mouseEvent = game:GetService("UserInputService").InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement then
+				local inputX,inputY = input.Position.X,input.Position.Y
+				local posX,posY = inputX-offX,inputY-offY
+				mainFrame.Position = UDim2.new(0,posX,0,posY)
+			end
+		end)
+	end
+end)
+print("fungsi ke 76767676")
+if enabled == true then
+local skids = {}
+for _,v in ipairs(w0:GetDescendants()) do
+	if v:IsA("SpawnLocation") then
+		table.insert(skids,v)
+	end
+end
+if #skids > 0 then
+	local lastSpawn
+	local function pwnedYoulol()
+		if #skids == 1 then
+			return skids[1]
+		end
+		local pick
+		repeat
+			pick = skids[math.random(1,#skids)]
+		until pick ~= lastSpawn
+		lastSpawn = pick
+		return pick
+	end
+	local function titi(char)
+		local hrp = char:WaitForChild("HumanoidRootPart",4.4)
+		if not hrp then return end
+		local spawn = pwnedYoulol()
+		if spawn then
+			hrp.CFrame = spawn.CFrame + Vector3.new(0,2.3,0)
+		end
+	end
+	local function titi2(plr)
+		plr.CharacterAdded:Connect(titi)
+		if plr.Character then
+			task.spawn(titi,plr.Character)
+		end
+	end
+	for _,plr in ipairs(Players:GetPlayers()) do titi2(plr) end Players.PlayerAdded:Connect(titi2)
+end
+local sitting = false local cooldown = false
+local cooldownTime = 1
+local currentWeld
+local jumpConnection
+local function Unsit(currentWeld)
+if not sitting then return end
+sitting = false
+if currentWeld and currentWeld.Parent then
+	currentWeld.Enabled = false
+	currentWeld:Destroy()
+	currentWeld = nil
+end
+if jumpConnection then
+		jumpConnection:Disconnect()
+		jumpConnection = nil
+end
+humanoid.Sit = false
+cooldown = true
+task.delay(cooldownTime, function() cooldown = false end)
+end
+local function SitOnSeat(seat)
+	if sitting or cooldown then return end
+	if not seat or not seat:IsDescendantOf(workspace) then return end
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+	sitting = true
+	character:MoveTo(seat.Position)
+	task.wait(0.04)
+	humanoid.Sit = true
+	humanoid.Jump = false
+	root.CFrame = seat.CFrame * CFrame.new(0, 1.56732728992, 0)
+	currentWeld = Instance.new("WeldConstraint")
+	currentWeld.Part0 = seat
+	currentWeld.Part1 = root
+	currentWeld.Parent = seat
+	jumpConnection = humanoid.Jumping:Connect(function(jumping)
+		if jumping then
+			Unsit(currentWeld)
+		end
+	end)
+end
+local function ConnectSeat(seat)
+if not (seat:IsA("Seat") or seat:IsA("VehicleSeat")) then
+return
+end
+seat.Touched:Connect(function(hit)
+if sitting or cooldown then
+return
+end
+local model = hit.Parent
+if not model then
+return
+end
+local hum = model:FindFirstChildOfClass("Humanoid")
+if hum ~= humanoid then return end
+SitOnSeat(seat)
+end)
+end
+for _, obj in ipairs(workspace:GetDescendants()) do if obj:IsA("Seat") or obj:IsA("VehicleSeat") then ConnectSeat(obj) end end
+workspace.DescendantAdded:Connect(function(obj) if obj:IsA("Seat") or obj:IsA("VehicleSeat") then ConnectSeat(obj) end end)
+else end  --// 0ZCAF HAXXXXXXXXXXXXXXXXXX
+
